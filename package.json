@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npx tsx server.ts",
+    "dev": "npx tsx --tsconfig tsconfig.json server.ts & next dev --port 3000 & wait",
     "dev:next": "next dev",
+    "dev:socket": "npx tsx --tsconfig tsconfig.json server.ts",
     "build": "next build",
-    "start": "NODE_ENV=production npx tsx server.ts",
+    "start": "NODE_ENV=production npx tsx --tsconfig tsconfig.json server.ts & next start --port 3000 & wait",
     "lint": "eslint",
     "typecheck": "npx tsc --noEmit",
     "db:migrate": "npx tsx src/lib/db/migrate.ts",

@@ -1,9 +1,16 @@
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  apiKey: process.env.AGENT_ROUTER_API_KEY || "",
-  baseURL: process.env.AGENT_ROUTER_BASE_URL || "https://openrouter.ai/api/v1",
-});
+let client: OpenAI | null = null;
+
+function getClient(): OpenAI {
+  if (!client) {
+    client = new OpenAI({
+      apiKey: process.env.AGENT_ROUTER_API_KEY || "sk-placeholder",
+      baseURL: process.env.AGENT_ROUTER_BASE_URL || "https://openrouter.ai/api/v1",
+    });
+  }
+  return client;
+}
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -16,7 +23,7 @@ export async function chatCompletion(
   maxTokens: number = 300
 ): Promise<string> {
   try {
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model,
       messages,
       max_tokens: maxTokens,
