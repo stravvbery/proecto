@@ -14,9 +14,9 @@ function getSocketUrl(): string {
     // The socket URL is passed via a meta tag or env variable
     const socketMeta = document.querySelector('meta[name="socket-url"]');
     if (socketMeta) {
-      return socketMeta.getAttribute("content") || "https://jgmsh-54-201-200-193.run.pinggy-free.link";
+      return socketMeta.getAttribute("content") || "https://lpnzr-54-201-200-193.run.pinggy-free.link";
     }
-    return "https://jgmsh-54-201-200-193.run.pinggy-free.link";
+    return "https://lpnzr-54-201-200-193.run.pinggy-free.link";
   }
   return "http://localhost:3001";
 }
