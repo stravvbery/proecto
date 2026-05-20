@@ -6,7 +6,17 @@ let socket: Socket | null = null;
 
 function getSocketUrl(): string {
   if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:3001`;
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") {
+      return `${window.location.protocol}//${host}:3001`;
+    }
+    // When behind a tunnel/proxy, Socket.IO runs on a separate subdomain
+    // The socket URL is passed via a meta tag or env variable
+    const socketMeta = document.querySelector('meta[name="socket-url"]');
+    if (socketMeta) {
+      return socketMeta.getAttribute("content") || "https://jgmsh-54-201-200-193.run.pinggy-free.link";
+    }
+    return "https://jgmsh-54-201-200-193.run.pinggy-free.link";
   }
   return "http://localhost:3001";
 }
