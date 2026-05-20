@@ -4,10 +4,10 @@ let client: OpenAI | null = null;
 
 function getClient(): OpenAI {
   if (!client) {
-    client = new OpenAI({
-      apiKey: process.env.AGENT_ROUTER_API_KEY || "sk-placeholder",
-      baseURL: process.env.AGENT_ROUTER_BASE_URL || "https://openrouter.ai/api/v1",
-    });
+    const baseURL = process.env.AGENT_ROUTER_BASE_URL || "https://agentrouter.org/v1";
+    const apiKey = process.env.AGENT_ROUTER_API_KEY || "sk-placeholder";
+    console.log(`[LLM] Initializing client: baseURL=${baseURL}`);
+    client = new OpenAI({ apiKey, baseURL });
   }
   return client;
 }
@@ -29,18 +29,25 @@ export async function chatCompletion(
       max_tokens: maxTokens,
       temperature: 0.9,
     });
-    return response.choices[0]?.message?.content?.trim() || "";
-  } catch (error) {
-    console.error(`[LLM] Error calling ${model}:`, error);
+    const content = response.choices[0]?.message?.content?.trim() || "";
+    if (content) {
+      console.log(`[LLM] ${model} responded (${content.length} chars)`);
+    } else {
+      console.warn(`[LLM] ${model} returned empty response`);
+    }
+    return content;
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error(`[LLM] Error calling ${model}: ${errMsg}`);
     return "";
   }
 }
 
 export const BOT_MODELS: Record<string, string> = {
-  "user-hixxivxq": "glm-4-plus",
-  "user-honda": "deepseek/deepseek-chat-v3-0324",
-  "user-ksynaxxxxx": "google/gemini-2.5-flash-preview",
-  "user-rrqxet": "glm-4-plus",
-  "user-saishiku": "anthropic/claude-3.5-haiku",
-  "user-vntrpz": "deepseek/deepseek-chat",
+  "user-hixxivxq": "glm-4.5",
+  "user-honda": "deepseek-v3.1",
+  "user-ksynaxxxxx": "gpt-5",
+  "user-rrqxet": "glm-4.6",
+  "user-saishiku": "glm-4.5",
+  "user-vntrpz": "deepseek-v3.1",
 };
