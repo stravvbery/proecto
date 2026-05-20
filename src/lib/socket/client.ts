@@ -3,40 +3,70 @@
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
+let currentUrl: string | null = null;
+let resolvedSocketUrl: string | null = null;
 
-function getSocketUrl(): string {
+async function fetchSocketUrl(): Promise<string> {
+  if (resolvedSocketUrl) return resolvedSocketUrl;
+  try {
+    const res = await fetch("/api/config");
+    const data = await res.json();
+    if (data.socketUrl) {
+      resolvedSocketUrl = data.socketUrl;
+      return data.socketUrl;
+    }
+  } catch {
+    // fallback
+  }
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host === "localhost" || host === "127.0.0.1") {
-      return `${window.location.protocol}//${host}:3001`;
-    }
-    // When behind a tunnel/proxy, Socket.IO runs on a separate subdomain
-    // The socket URL is passed via a meta tag or env variable
-    const socketMeta = document.querySelector('meta[name="socket-url"]');
-    if (socketMeta) {
-      return socketMeta.getAttribute("content") || "https://lpnzr-54-201-200-193.run.pinggy-free.link";
-    }
-    return "https://lpnzr-54-201-200-193.run.pinggy-free.link";
+    resolvedSocketUrl = (host === "localhost" || host === "127.0.0.1")
+      ? `${window.location.protocol}//${host}:3001`
+      : `${window.location.protocol}//${host}:3001`;
+  } else {
+    resolvedSocketUrl = "http://localhost:3001";
+  }
+  return resolvedSocketUrl;
+}
+
+function getSocketUrlSync(): string {
+  if (resolvedSocketUrl) return resolvedSocketUrl;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    return (host === "localhost" || host === "127.0.0.1")
+      ? `${window.location.protocol}//${host}:3001`
+      : `${window.location.protocol}//${host}:3001`;
   }
   return "http://localhost:3001";
 }
 
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io(getSocketUrl(), {
+    const url = getSocketUrlSync();
+    currentUrl = url;
+    socket = io(url, {
       autoConnect: false,
+      transports: ["websocket", "polling"],
     });
   }
   return socket;
 }
 
-export function connectSocket(token: string) {
-  const s = getSocket();
-  s.auth = { token };
-  if (!s.connected) {
-    s.connect();
+export async function connectSocket(token: string): Promise<Socket> {
+  const url = await fetchSocketUrl();
+  if (!socket || currentUrl !== url) {
+    if (socket) socket.disconnect();
+    currentUrl = url;
+    socket = io(url, {
+      autoConnect: false,
+      transports: ["websocket", "polling"],
+    });
   }
-  return s;
+  socket.auth = { token };
+  if (!socket.connected) {
+    socket.connect();
+  }
+  return socket;
 }
 
 export function disconnectSocket() {

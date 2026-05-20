@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 
 const USERS = [
   { username: "stravvbery", role: "Founder", color: "#5865F2" },
-  { username: "Hixxivxq", role: "Senior Mod", color: "#c27c0e" },
-  { username: "honda", role: "VIP", color: "#9b59b6" },
-  { username: "ksynaxxxxx", role: "Игрок", color: "#b5bac1" },
-  { username: "rrqxet", role: "VIP", color: "#9b59b6" },
-  { username: "saishiku", role: "Helper", color: "#eb459e" },
-  { username: "vntrpz", role: "Mod", color: "#23a559" },
+  { username: "Hixxivxq", role: "Новичок", color: "#80848e" },
+  { username: "honda", role: "Новичок", color: "#80848e" },
+  { username: "ksynaxxxxx", role: "Новичок", color: "#80848e" },
+  { username: "rrqxet", role: "Новичок", color: "#80848e" },
+  { username: "saishiku", role: "Новичок", color: "#80848e" },
+  { username: "vntrpz", role: "Новичок", color: "#80848e" },
 ];
 
 export default function LoginPage() {

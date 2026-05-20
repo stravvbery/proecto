@@ -85,6 +85,15 @@ async function startSocketServer() {
     });
 
     socket.on("message:send", async (data: { channelId: string; content: string }) => {
+      // Broadcast the user's message to all clients in the channel
+      // (the sender already adds it locally, but other tabs/clients need it)
+      io.to(data.channelId).emit("message:broadcast", {
+        channelId: data.channelId,
+        userId,
+        username,
+        content: data.content,
+      });
+      // Trigger bot reactions
       onNewMessage(data.channelId, userId, data.content);
     });
 

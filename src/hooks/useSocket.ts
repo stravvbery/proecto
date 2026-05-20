@@ -13,24 +13,34 @@ export function useSocket(token: string | null) {
   useEffect(() => {
     if (!token) return;
 
-    const s = connectSocket(token);
-    socketRef.current = s;
-    forceRender((n) => n + 1);
+    let cancelled = false;
 
-    const onConnect = () => setIsConnected(true);
-    const onDisconnect = () => setIsConnected(false);
-    const onPresence = (data: { onlineUsers: string[] }) => {
-      setOnlineUsers(data.onlineUsers);
-    };
+    connectSocket(token).then((s) => {
+      if (cancelled) return;
+      socketRef.current = s;
+      forceRender((n) => n + 1);
 
-    s.on("connect", onConnect);
-    s.on("disconnect", onDisconnect);
-    s.on("presence:update", onPresence);
+      const onConnect = () => setIsConnected(true);
+      const onDisconnect = () => setIsConnected(false);
+      const onPresence = (data: { onlineUsers: string[] }) => {
+        setOnlineUsers(data.onlineUsers);
+      };
+
+      s.on("connect", onConnect);
+      s.on("disconnect", onDisconnect);
+      s.on("presence:update", onPresence);
+
+      if (s.connected) {
+        setIsConnected(true);
+      }
+    });
 
     return () => {
-      s.off("connect", onConnect);
-      s.off("disconnect", onDisconnect);
-      s.off("presence:update", onPresence);
+      cancelled = true;
+      const s = socketRef.current;
+      s.off("connect");
+      s.off("disconnect");
+      s.off("presence:update");
     };
   }, [token]);
 

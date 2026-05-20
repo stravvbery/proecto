@@ -60,12 +60,12 @@ const channelsList = [
 
 const userRoleAssignments = [
   { userId: "user-stravvbery", roleId: "role-founder" },
-  { userId: "user-hixxivxq", roleId: "role-senior-mod" },
-  { userId: "user-honda", roleId: "role-vip" },
-  { userId: "user-ksynaxxxxx", roleId: "role-player" },
-  { userId: "user-rrqxet", roleId: "role-vip" },
-  { userId: "user-saishiku", roleId: "role-helper" },
-  { userId: "user-vntrpz", roleId: "role-mod" },
+  { userId: "user-hixxivxq", roleId: "role-newbie" },
+  { userId: "user-honda", roleId: "role-newbie" },
+  { userId: "user-ksynaxxxxx", roleId: "role-newbie" },
+  { userId: "user-rrqxet", roleId: "role-newbie" },
+  { userId: "user-saishiku", roleId: "role-newbie" },
+  { userId: "user-vntrpz", roleId: "role-newbie" },
 ];
 
 // Clear existing data
@@ -98,7 +98,7 @@ sqlite.prepare(
   "Русскоязычное SCP:SL комьюнити",
   null,
   "user-stravvbery",
-  `Сервер основан в 2018 году hondafx — разработчиком ру-комьюнити SCP: Secret Laboratory. На пике — 4 сервера (Vanilla x2, RP, Modded), до 120 игроков одновременно.\n\nВ мае 2025 года hondafx передал сервер команде stravvbery. При передаче были сохранены: база данных игроков, конфигурации плагинов, система ролей и каналов, история чатов, традиции комьюнити.\n\nСейчас honda (бывший владелец) иногда заходит как VIP — следит за развитием сервера под новым руководством, даёт советы, ностальгирует.`,
+  `Перезапуск сервера. Раньше был сервер hondafx, но он провалился и закрылся. Сейчас stravvbery запускает всё заново с чистого листа. Все участники — новички, ролей пока нет. История начинается сейчас.`,
   now
 );
 
@@ -149,18 +149,10 @@ const insertEvent = sqlite.prepare(
 insertEvent.run(
   uuid(),
   SERVER_ID,
-  "server.founded",
-  JSON.stringify({ message: "Сервер основан hondafx в 2018 году" }),
-  "user-honda",
-  "2018-01-15T12:00:00.000Z"
-);
-insertEvent.run(
-  uuid(),
-  SERVER_ID,
-  "server.transferred",
-  JSON.stringify({ message: "Сервер передан от hondafx к stravvbery", from: "honda", to: "stravvbery" }),
-  "user-honda",
-  "2025-05-01T12:00:00.000Z"
+  "server.restarted",
+  JSON.stringify({ message: "Сервер перезапущен stravvbery с чистого листа" }),
+  "user-stravvbery",
+  now
 );
 
 // Seed important channels content
@@ -184,26 +176,20 @@ insertMessage.run(uuid(), "ch-rules", "user-stravvbery", `# 📜 Правила 
 > Решение стаффа — финальное`, now);
 
 // Announcement
-insertMessage.run(uuid(), "ch-announcements", "user-stravvbery", `# 🎉 Новое руководство!
+insertMessage.run(uuid(), "ch-announcements", "user-stravvbery", `# 🎉 Перезапуск!
 
-Привет всем! Я **stravvbery**, новый владелец сервера. **honda** передал мне управление, и я планирую сохранить и развить всё лучшее, что было создано за эти годы.
+Привет! Я **stravvbery**. Запускаю сервер заново с чистого листа.
 
-Что планируется:
-- Обновление плагинов
-- Новые ивенты
-- Активная модерация
-- Открытость к предложениям
+Раньше был hondafx, но не взлетел. Теперь попробуем снова.
 
-Пишите в #предложения, я всё читаю! 🔥`, now);
+Пока все — новички. Роли буду раздавать по мере активности. Пишите, общайтесь, предлагайте! 🔥`, now);
 
 // News
 insertMessage.run(uuid(), "ch-news", "user-stravvbery", `# 📰 Новости — Май 2025
 
-- ✅ Сервер успешно передан новому владельцу
-- ✅ Обновлена система ролей
-- ✅ Добавлены новые каналы
-- 🔄 В процессе: обновление плагинов до последних версий
-- 📋 Планируется: первый ивент под новым руководством
+- ✅ Сервер перезапущен с нуля
+- 🔄 Набираем людей
+- 📋 Роли будут позже
 
 Следите за обновлениями! 🛡️`, now);
 
