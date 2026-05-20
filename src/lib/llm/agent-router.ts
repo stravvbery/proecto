@@ -44,10 +44,10 @@ export async function chatCompletion(
 }
 
 export const BOT_MODELS: Record<string, string> = {
-  "user-hixxivxq": "glm-4.5",
-  "user-honda": "deepseek-v3.1",
-  "user-ksynaxxxxx": "gpt-5",
-  "user-rrqxet": "glm-4.6",
-  "user-saishiku": "glm-4.5",
-  "user-vntrpz": "deepseek-v3.1",
+  "user-hixxivxq": "deepseek-v4-flash",
+  "user-honda": "deepseek-v4-pro",
+  "user-ksynaxxxxx": "claude-opus-4-6",
+  "user-rrqxet": "glm-5.1",
+  "user-saishiku": "claude-haiku-4-5-20251001",
+  "user-vntrpz": "deepseek-v4-flash",
 };
